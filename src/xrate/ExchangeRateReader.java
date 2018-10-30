@@ -24,10 +24,10 @@ public class ExchangeRateReader {
      * year, month, and day; the URL for 25 June 2010, for example, would be
      * http://api.finance.xaviermedia.com/api/2010/06/25.xml
      *
-     * @param newURL
+     * @param baseURL
      *            the base URL for requests
      */
-    public ExchangeRateReader(String newURL) {
+    public ExchangeRateReader(String baseURL) {
         // TODO Your code here
         /*
          * DON'T DO MUCH HERE!
@@ -35,7 +35,7 @@ public class ExchangeRateReader {
          * the two methods below. All you need to do here is store the
          * provided `Url` in a field so it will be accessible later.
          */
-         this.Url = newURL;
+         this.Url = baseURL;
         try {
             this.accessKey = new BufferedReader(new FileReader("src/accessKey")).readLine();
         } catch (FileNotFoundException e) {
@@ -64,9 +64,9 @@ public class ExchangeRateReader {
      */
     public float getExchangeRate(String currencyCode, int year, int month, int day) throws IOException {
         // TODO Your code here
-        URL completeURL = generateURL(year, month, day);
+        URL finalURL = createURL(year, month, day);
 
-        InputStream inputStream = completeURL.openStream();
+        InputStream inputStream = finalURL.openStream();
         BufferedReader reader = new BufferedReader(new InputStreamReader(inputStream));
 
         JsonParser parser = new JsonParser();
@@ -96,13 +96,15 @@ public class ExchangeRateReader {
      * @throws IOException
      */
 
+    //write code to change single digit dates to 2 digit dates
+
     public float getExchangeRate(
     String fromCurrency, String toCurrency,
     int year, int month, int day) throws IOException {
 
-    URL completeURL = generateURL(year, month, day);
+    URL finalURL = createURL(year, month, day);
 
-    InputStream inputStream = completeURL.openStream();
+    InputStream inputStream = finalURL.openStream();
     BufferedReader reader = new BufferedReader(new InputStreamReader(inputStream));
 
     JsonParser parser = new JsonParser();
