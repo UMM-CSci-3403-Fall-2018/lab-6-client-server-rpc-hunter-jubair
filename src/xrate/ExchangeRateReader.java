@@ -35,14 +35,6 @@ public class ExchangeRateReader {
 
     public ExchangeRateReader(String baseURL) throws IOException {
 
-        // TODO Your code here
-        /*
-         * DON'T DO MUCH HERE!
-         * People often try to do a lot here, but the action is actually in
-         * the two methods below. All you need to do here is store the
-         * provided `Url` in a field so it will be accessible later.
-         */
-
         this.Url = baseURL;
 
         readAccessKeys();
@@ -100,7 +92,6 @@ public class ExchangeRateReader {
 
 
     public float getExchangeRate(String currencyCode, int year, int month, int day) throws IOException {
-        // TODO Your code here
 
         String modMonth = addZero(month);
         String modDay = addZero(day);
@@ -145,38 +136,49 @@ public class ExchangeRateReader {
 
     // Write code to change single digit dates to 2 digit dates
 
-    public String addZero(int dateOrMonth) {
+    public String addZero(int dayOrMonth) {
 
-        if (dateOrMonth < 10) {
+        if (dayOrMonth < 10) {
 
-            return "0" + String.valueOf(dateOrMonth);
+            return "0" + String.valueOf(dayOrMonth);
 
         }
 
         else {
 
-            return String.valueOf(dateOrMonth);
+            return String.valueOf(dayOrMonth);
 
         }
 
     }
 
 
-    public float getExchangeRate(
-    String fromCurrency, String toCurrency,
-    int year, int month, int day) throws IOException {
+    public float getExchangeRate(String fromCurrency, String toCurrency, int year, int month, int day) throws IOException {
 
-    URL finalURL = createURL(year, month, day);
+        String modMonth = addZero(month);
+        String modDay = addZero(day);
 
-    InputStream inputStream = finalURL.openStream();
-    BufferedReader reader = new BufferedReader(new InputStreamReader(inputStream));
+        String newURL = Url + year + "-" + modMonth + "-" + modDay + "?access_key=" + accessKey;
 
-    JsonParser parser = new JsonParser();
-    JsonObject Data = parser.parse(reader).getAsJsonObject();
+        URL finalURL = new URL(newURL);
 
-    Float fromCurrencyValue = Data.getAsJsonObject("rates").get(fromCurrency).getAsFloat();
-    Float toCurrencyValue = Data.getAsJsonObject("rates").get(toCurrency).getAsFloat();
+        InputStream inputStream = finalURL.openStream();
 
-    return fromCurrencyValue/toCurrencyValue;
-}
+        BufferedReader reader = new BufferedReader(new InputStreamReader(inputStream));
+
+        JsonParser parser = new JsonParser();
+
+        JsonObject Data = parser.parse(reader).getAsJsonObject();
+
+        float fromCurrencyValue = getRate(Data, fromCurrency);
+        float toCurrencyValue = getRate(Data, toCurrency);
+
+        float comparativeExchangeRate = fromCurrencyValue/toCurrencyValue;
+
+
+
+        return comparativeExchangeRate;
+
+    }
+
 }
