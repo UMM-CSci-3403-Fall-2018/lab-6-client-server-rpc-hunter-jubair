@@ -114,10 +114,11 @@ public class ExchangeRateReader {
         BufferedReader reader = new BufferedReader(new InputStreamReader(inputStream));
 
         JsonParser parser = new JsonParser();
-        JsonObject Data = parser.parse(reader).getAsJsonObject();
 
-        JsonElement exchangeRate = Data.getAsJsonObject("rates").get(currencyCode);
-        Float parsedExchangeRate = exchangeRate.getAsFloat();
+        JsonObject exchangeRate = parser.parse(reader).getAsJsonObject();
+
+        float parsedExchangeRate = getRate(exchangeRate, currencyCode);
+
 
         return parsedExchangeRate;
     }
